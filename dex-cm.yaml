@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dex
+  namespace: auth-system
+data:
+  config.yaml: |
+    issuer: https://dex.example.com/
+    web:
+      http: 0.0.0.0:5556
+    frontend:
+      theme: custom
+    telemetry:
+      http: 0.0.0.0:5558
+    staticClients:
+    - id: oidc-auth-client
+      redirectURIs:
+      - 'https://kubectl.example.com/callback'
+      - 'http://dashboard.example.com/oauth2/callback'
+      name: 'oidc-auth-client'
+      secret: XmT7EHo27skGchX0yLQNTYXibm3aNkx5
+    connectors:
+    - type: ldap
+      id: ldap
+      name: LDAP
+      config:
+        host: ldap.example.com:389
+        insecureNoSSL: true
+        insecureSkipVerify: true
+        bindDN: CN=Administrator,CN=Users,DC=example,DC=com
+        bindPW: ************ #Add Administrator password
+        userSearch:
+          baseDN: CN=Users,DC=example,DC=com
+          filter: (objectClass=user)
+          username: name
+          idAttr: uid
+          emailAttr: mail
+          nameAttr: mail
+    oauth2:
+      skipApprovalScreen: true
+    storage:
+      type: kubernetes
+      config:
+        inCluster: true

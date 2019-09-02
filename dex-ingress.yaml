@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dex
+  namespace: auth-system
+  annotations:
+# Change Issuer name
+    certmanager.k8s.io/cluster-issuer: "selfsigning-issuer"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  tls:
+  - secretName: dex
+    hosts:
+    - dex.example.com
+  rules:
+  - host: dex.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: dex
+          servicePort: 5556
