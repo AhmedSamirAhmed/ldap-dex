@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gangway
+  namespace: auth-system
+  annotations:
+    certmanager.k8s.io/cluster-issuer: "selfsigning-issuer"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  tls:
+  - secretName: gangway
+    hosts:
+    - kubectl.example.com
+  rules:
+  - host: kubectl.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: gangway-svc
+          servicePort: http
